@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutral Harmony -->
-    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area. A mobile phone mockup is the core interactive component. The structure is task-oriented, focusing on two main interactive flows: Passkey Creation and Payment Confirmation. This design was chosen to provide a direct, hands-on experience, allowing users to "step through" the process on a simulated device. The phone mockup acts as a visual state machine, dynamically updating its content based on user clicks to simulate both UI changes and underlying code execution, which is a highly effective method for teaching complex processes. -->
-    <!-- Visualization & Content Choices: The report describes processes, not quantitative data, so traditional charts are unsuitable. The primary "visualization" is an interactive phone mockup built with HTML/Tailwind. Goal: Explain Process -> Method: Interactive, state-driven phone mockup with dynamic screen content -> Interaction: Clicking buttons on the phone advances the simulation to the next step, revealing UI and code. Justification: This actively engages the user and provides a more intuitive, cause-and-effect learning experience than static diagrams and modals. Interactive HTML tables are used to present technical parameters. All elements are built with HTML/CSS/JS, confirming no SVG/Mermaid. -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area. The structure is now directly task-oriented, focusing on two main interactive flows: Passkey Creation and Payment Confirmation. The interactive phone mockup and its state-driven logic are integrated directly into the "Criação de Passkey" and "Pagamento com SPC" sections. This design was chosen to create a more cohesive and contextual learning experience, linking explanatory text directly with a hands-on simulation in one view. -->
+    <!-- Visualization & Content Choices: The report describes processes, not quantitative data, so traditional charts are unsuitable. The core interactive element is the phone mockup, built with HTML/Tailwind. Goal: Explain Process -> Method: Interactive, state-driven phone mockup with dynamic screen content, placed directly within the relevant sections -> Interaction: Clicking buttons on the phone advances the simulation to the next step, revealing both UI changes and code snippets. Justification: This provides a highly integrated, cause-and-effect learning experience. Interactive HTML tables are used for technical parameters in a separate section. All elements are built with HTML/CSS/JS, confirming no SVG/Mermaid. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -54,6 +54,15 @@
         .code-string { color: #FBBF24; }
         .code-comment { color: #9CA3AF; }
         .code-variable { color: #34D399; }
+        pre {
+            background-color: #1F2937;
+            color: #E5E7EB;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -71,9 +80,6 @@
                 <a href="#payment" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
                     <span class="mr-3">💳</span> Pagamento com SPC
                 </a>
-                <a href="#simulation" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
-                    <span class="mr-3">📱</span> Simulação Interativa
-                </a>
                 <a href="#details" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
                     <span class="mr-3">⚙️</span> Detalhes Técnicos
                 </a>
@@ -90,7 +96,6 @@
                         <option value="intro">Introdução</option>
                         <option value="creation">Criação de Passkey</option>
                         <option value="payment">Pagamento com SPC</option>
-                        <option value="simulation">Simulação Interativa</option>
                         <option value="details">Detalhes Técnicos</option>
                         <option value="security">Segurança</option>
                     </select>
@@ -113,36 +118,62 @@
                 
                 <section id="creation" class="content-section hidden">
                     <h2 class="text-3xl font-bold text-gray-900 mb-2">Criação de Passkey</h2>
-                    <p class="text-lg text-gray-600 mb-8">Esta seção descreve a jornada do usuário para criar uma passkey em seu dispositivo. O processo garante que a conta do usuário seja associada de forma segura a uma nova credencial criptográfica, substituindo a necessidade de senhas. Para uma demonstração prática, acesse a seção de Simulação Interativa.</p>
+                    <p class="text-lg text-gray-600 mb-8">Esta seção descreve a jornada do usuário para criar uma passkey em seu dispositivo. O processo garante que a conta do usuário seja associada de forma segura a uma nova credencial criptográfica, substituindo a necessidade de senhas. Use a simulação abaixo para explorar o fluxo passo a passo.</p>
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="flex-1">
+                            <div class="phone-mockup mx-auto lg:mx-0">
+                                <div class="phone-header rounded-t-xl text-gray-600">
+                                    <span class="text-xs">9:41</span>
+                                    <div class="w-12 h-4 bg-gray-800 rounded-b-xl -mt-1 mx-2"></div>
+                                    <span class="text-xs">📶 🔋</span>
+                                </div>
+                                <div id="creation-phone-screen" class="phone-screen p-4 flex flex-col justify-between">
+                                    <div id="creation-screen-content" class="text-center flex-1 flex flex-col items-center justify-center">
+                                        <span class="text-5xl mb-4">🔑</span>
+                                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Criação de Passkey</h3>
+                                        <p class="text-gray-600">Bem-vindo! Clique no botão abaixo para iniciar o processo de criação da sua passkey.</p>
+                                    </div>
+                                    <div id="creation-screen-actions" class="flex flex-col space-y-4">
+                                        <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="nextCreationStep()">Criar Passkey</button>
+                                    </div>
+                                </div>
+                                <div class="h-4 bg-black rounded-b-3xl"></div>
+                            </div>
+                        </div>
+                        <div id="creation-explanation" class="flex-1 bg-white p-6 rounded-xl border border-gray-200">
+                            <h3 class="font-semibold text-lg text-gray-800">Início do Processo</h3>
+                            <p class="text-gray-600 mt-2">Clique em "Criar Passkey" no celular para começar a simulação do fluxo. Cada passo irá atualizar esta área com uma explicação detalhada e código de exemplo.</p>
+                        </div>
+                    </div>
                 </section>
 
                 <section id="payment" class="content-section hidden">
                     <h2 class="text-3xl font-bold text-gray-900 mb-2">Pagamento com SPC</h2>
-                    <p class="text-lg text-gray-600 mb-8">Aqui, exploramos como o Secure Payment Confirmation (SPC) utiliza passkeys para autorizar transações. O foco é na segurança e na experiência do usuário, garantindo que o consentimento do pagamento seja explícito e à prova de adulteração. Para uma demonstração prática, acesse a seção de Simulação Interativa.</p>
-                </section>
-
-                <section id="simulation" class="content-section hidden">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Simulação Interativa</h2>
-                    <p class="text-lg text-gray-600 mb-8">Utilize o mockup de celular abaixo para simular os fluxos de passkeys e SPC. Clique nos botões para avançar nas etapas e ver como a UI do navegador e as chamadas de código interagem para garantir uma experiência de autenticação e pagamento segura.</p>
-                    <div class="flex justify-center">
-                        <div class="phone-mockup">
-                            <div class="phone-header rounded-t-xl text-gray-600">
-                                <span class="text-xs">9:41</span>
-                                <div class="w-12 h-4 bg-gray-800 rounded-b-xl -mt-1 mx-2"></div>
-                                <span class="text-xs">📶 🔋</span>
-                            </div>
-                            <div id="phone-screen" class="phone-screen p-4 flex flex-col justify-between">
-                                <div id="screen-content" class="text-center flex-1 flex flex-col items-center justify-center">
-                                    <span class="text-5xl mb-4">🔑</span>
-                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Passkeys & SPC</h3>
-                                    <p class="text-gray-600 mb-6">Selecione uma ação para iniciar a simulação:</p>
+                    <p class="text-lg text-gray-600 mb-8">Aqui, exploramos como o Secure Payment Confirmation (SPC) utiliza passkeys para autorizar transações. O foco é na segurança e na experiência do usuário, garantindo que o consentimento do pagamento seja explícito e à prova de adulteração. Use a simulação abaixo para explorar o fluxo passo a passo.</p>
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="flex-1">
+                            <div class="phone-mockup mx-auto lg:mx-0">
+                                <div class="phone-header rounded-t-xl text-gray-600">
+                                    <span class="text-xs">9:41</span>
+                                    <div class="w-12 h-4 bg-gray-800 rounded-b-xl -mt-1 mx-2"></div>
+                                    <span class="text-xs">📶 🔋</span>
                                 </div>
-                                <div id="screen-actions" class="flex flex-col space-y-4">
-                                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="startSimulation('creation')">Criar Passkey</button>
-                                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="startSimulation('payment')">Pagar com Passkey</button>
+                                <div id="payment-phone-screen" class="phone-screen p-4 flex flex-col justify-between">
+                                    <div id="payment-screen-content" class="text-center flex-1 flex flex-col items-center justify-center">
+                                        <span class="text-5xl mb-4">💳</span>
+                                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Pagar com Passkey</h3>
+                                        <p class="text-gray-600">Clique em "Pagar com Passkey" no celular para iniciar a simulação de uma transação.</p>
+                                    </div>
+                                    <div id="payment-screen-actions" class="flex flex-col space-y-4">
+                                        <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Pagar com Passkey</button>
+                                    </div>
                                 </div>
+                                <div class="h-4 bg-black rounded-b-3xl"></div>
                             </div>
-                            <div class="h-4 bg-black rounded-b-3xl"></div>
+                        </div>
+                        <div id="payment-explanation" class="flex-1 bg-white p-6 rounded-xl border border-gray-200">
+                            <h3 class="font-semibold text-lg text-gray-800">Início do Pagamento</h3>
+                            <p class="text-gray-600 mt-2">Clique em "Pagar com Passkey" no celular para começar a simulação do fluxo de pagamento. Cada passo irá atualizar esta área com uma explicação detalhada e código de exemplo.</p>
                         </div>
                     </div>
                 </section>
@@ -308,99 +339,244 @@
             const hash = window.location.hash || '#intro';
             setActiveSection(hash);
         });
+        
+        const creationScreenContent = document.getElementById('creation-screen-content');
+        const creationScreenActions = document.getElementById('creation-screen-actions');
+        const creationExplanation = document.getElementById('creation-explanation');
+        let creationStep = 0;
 
-        const phoneScreen = document.getElementById('phone-screen');
-        const screenContent = document.getElementById('screen-content');
-        const screenActions = document.getElementById('screen-actions');
-
-        const simulationData = {
-            'creation': [
-                {
-                    title: 'Criação de Passkey',
-                    description: 'O frontend se prepara para solicitar ao backend os parâmetros de registro.',
-                    actions: `<button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#8B5CF6] transition-colors" onclick="nextStep('creation', 1)">Frontend: Solicita Opções</button>`
-                },
-                {
-                    title: 'Backend Gera Opções',
-                    description: 'O backend cria um <strong>challenge</strong> único e os parâmetros de usuário, e os envia ao frontend.',
-                    actions: `<button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#8B5CF6] transition-colors" onclick="nextStep('creation', 2)">Simular ` + `<span class="code-function">navigator.credentials.create()</span></button>`
-                },
-                {
-                    title: 'Confirmação do Usuário',
-                    description: `O navegador exibe uma UI nativa. Simule a confirmação do usuário com biometria.`,
-                    actions: `<button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#10B981] transition-colors" onclick="nextStep('creation', 3)">Autenticado</button>`
-                },
-                {
-                    title: 'Backend Verifica',
-                    description: 'A credencial é enviada ao backend, que verifica a assinatura e salva a chave pública. Passkey criada com sucesso!',
-                    actions: `<button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors" onclick="resetSimulation()">Voltar ao Início</button>`
-                }
-            ],
-            'payment': [
-                {
-                    title: 'Confirmar Pagamento',
-                    description: 'O frontend está pronto para solicitar ao backend os detalhes de pagamento.',
-                    actions: `<button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#10B981] transition-colors" onclick="nextStep('payment', 1)">Frontend: Solicita Opções de Pagamento</button>`
-                },
-                {
-                    title: 'Backend Prepara Dados SPC',
-                    description: 'O backend prepara os detalhes da transação (valor, beneficiário) e o <strong>challenge</strong> para o SPC.',
-                    actions: `<button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#10B981] transition-colors" onclick="nextStep('payment', 2)">Simular ` + `<span class="code-function">PaymentRequest.show()</span></button>`
-                },
-                {
-                    title: 'Confirmação de Pagamento',
-                    description: `O navegador exibe a UI de confirmação de pagamento. Clique para simular a aprovação.`,
-                    actions: `<button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#8B5CF6] transition-colors" onclick="nextStep('payment', 3)">Pagar R$ 59,99</button>`
-                },
-                {
-                    title: 'Backend Verifica',
-                    description: 'A resposta do pagamento é verificada no backend, confirmando a transação. Pagamento concluído com sucesso!',
-                    actions: `<button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors" onclick="resetSimulation()">Voltar ao Início</button>`
-                }
-            ]
-        };
-
-        let currentFlow = '';
-        let currentStep = 0;
-
-        function renderPhoneScreen(flow, step) {
-            const data = simulationData[flow][step];
-            screenContent.innerHTML = `
-                <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
-                    <span class="text-5xl mb-4">${flow === 'creation' ? '🔑' : '💳'}</span>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">${data.title}</h3>
-                    <p class="text-gray-600">${data.description}</p>
-                </div>
-            `;
-            screenActions.innerHTML = data.actions;
-        }
-
-        function startSimulation(flow) {
-            currentFlow = flow;
-            currentStep = 0;
-            renderPhoneScreen(currentFlow, currentStep);
-        }
-
-        function nextStep(flow, step) {
-            if (flow !== currentFlow) return;
-            currentStep = step;
-            renderPhoneScreen(currentFlow, currentStep);
-        }
-
-        function resetSimulation() {
-            currentFlow = '';
-            currentStep = 0;
-            screenContent.innerHTML = `
-                <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+        const creationSteps = [
+            {
+                title: 'Início do Processo',
+                screen: `
                     <span class="text-5xl mb-4">🔑</span>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Passkeys & SPC</h3>
-                    <p class="text-gray-600 mb-6">Selecione uma ação para iniciar a simulação:</p>
-                </div>
-            `;
-            screenActions.innerHTML = `
-                <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="startSimulation('creation')">Criar Passkey</button>
-                <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="startSimulation('payment')">Pagar com Passkey</button>
-            `;
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Criação de Passkey</h3>
+                    <p class="text-gray-600">Bem-vindo! Clique no botão abaixo para iniciar o processo de criação da sua passkey.</p>
+                `,
+                actions: `
+                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="nextCreationStep()">Criar Passkey</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 1: Frontend Inicia o Registro</h3>
+                    <p class="text-gray-600 mt-2">A jornada começa com o usuário interagindo com a interface. O frontend, em resposta a essa ação, faz uma chamada de rede para o backend para obter os parâmetros necessários para a criação da passkey. Esta é a primeira etapa para garantir a segurança da transação.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Exemplo de chamada do frontend para o backend</span>
+<span class="code-keyword">const</span> <span class="code-variable">response</span> = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(<span class="code-string">'/generate-registration-options'</span>);
+<span class="code-keyword">const</span> <span class="code-variable">options</span> = <span class="code-keyword">await</span> <span class="code-variable">response</span>.<span class="code-function">json</span>();
+<span class="code-comment">// 'options' agora contém o challenge e outros parâmetros do backend</span>
+                    </code></pre>
+                `
+            },
+            {
+                title: 'Backend Gera Opções',
+                screen: `
+                    <span class="text-5xl mb-4">🖥️</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Conectando ao Servidor...</h3>
+                    <p class="text-gray-600">O servidor está gerando um token de segurança único (challenge) e outras opções para a sua passkey.</p>
+                `,
+                actions: `
+                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="nextCreationStep()">Simular ` + `<span class="code-function">navigator.credentials.create()</span></button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 2: Backend Gera Opções</h3>
+                    <p class="text-gray-600 mt-2">O backend tem a responsabilidade crítica de gerar as opções para a criação da credencial. A peça mais importante é o <code>challenge</code>, um buffer de bytes aleatórios e criptograficamente seguro que previne ataques de repetição.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Exemplo de lógica de backend (usando uma biblioteca FIDO)</span>
+<span class="code-keyword">import</span> { <span class="code-variable">generateRegistrationOptions</span> } <span class="code-keyword">from</span> <span class="code-string">'@simplewebauthn/server'</span>;
+<span class="code-keyword">const</span> <span class="code-variable">options</span> = <span class="code-keyword">await</span> <span class="code-function">generateRegistrationOptions</span>({
+  <span class="code-variable">rpID</span>: <span class="code-string">'example.com'</span>,
+  <span class="code-variable">rpName</span>: <span class="code-string">'My Awesome App'</span>,
+  <span class="code-variable">userID</span>: <span class="code-string">'user-unique-id'</span>,
+  <span class="code-variable">userName</span>: <span class="code-string">'user@example.com'</span>,
+});
+<span class="code-comment">// O backend deve salvar 'options.challenge' na sessão do usuário</span>
+                    </code></pre>
+                `
+            },
+            {
+                title: 'Confirmação do Usuário',
+                screen: `
+                    <span class="text-5xl mb-4">📱</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Confirme sua Passkey</h3>
+                    <p class="text-gray-600">O navegador está solicitando sua confirmação. Use sua biometria, PIN ou senha para autorizar.</p>
+                `,
+                actions: `
+                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextCreationStep()">Autenticado</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 3: Chamada ` + `<span class="code-function">navigator.credentials.create()</span>` + `</h3>
+                    <p class="text-gray-600 mt-2">Com as opções do backend, o frontend invoca a API do navegador <code>navigator.credentials.create()</code>. O navegador então exibe uma interface nativa que pede a confirmação do usuário (biometria, PIN ou senha), garantindo uma experiência segura e consistente.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Frontend recebe 'options' do backend e chama a API</span>
+<span class="code-keyword">let</span> <span class="code-variable">newCredential</span>;
+<span class="code-keyword">try</span> {
+  <span class="code-variable">newCredential</span> = <span class="code-keyword">await</span> <span class="code-variable">navigator</span>.<span class="code-variable">credentials</span>.<span class="code-function">create</span>({
+    <span class="code-variable">publicKey</span>: <span class="code-variable">options</span>
+  });
+} <span class="code-keyword">catch</span> (e) {
+  <span class="code-comment">// Lidar com erros, como o usuário cancelar a operação</span>
+}
+                    </code></pre>
+                `
+            },
+            {
+                title: 'Sucesso',
+                screen: `
+                    <span class="text-5xl mb-4">🎉</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Passkey Criada!</h3>
+                    <p class="text-gray-600">Sua nova passkey foi criada e está pronta para ser usada de forma segura.</p>
+                `,
+                actions: `
+                    <button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-400 transition-colors" onclick="resetCreationSimulation()">Reiniciar Simulação</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 4: Backend Verifica e Armazena</h3>
+                    <p class="text-gray-600 mt-2">A credencial é enviada de volta ao servidor, que a valida criptograficamente, verifica o <code>challenge</code> e armazena a chave pública no banco de dados. Este é o passo final que garante a segurança e integridade do processo de registro.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Exemplo de verificação no backend</span>
+<span class="code-keyword">import</span> { <span class="code-variable">verifyRegistrationResponse</span> } <span class="code-keyword">from</span> <span class="code-string">'@simplewebauthn/server'</span>;
+<span class="code-keyword">const</span> <span class="code-variable">verification</span> = <span class="code-keyword">await</span> <span class="code-function">verifyRegistrationResponse</span>({
+  <span class="code-variable">response</span>: <span class="code-variable">newCredential</span>,
+  <span class="code-variable">expectedChallenge</span>: <span class="code-variable">userSession</span>.<span class="code-variable">currentChallenge</span>,
+  <span class="code-variable">expectedOrigin</span>: <span class="code-string">'https://example.com'</span>,
+});
+                    </code></pre>
+                `
+            }
+        ];
+
+        function nextCreationStep() {
+            creationStep = (creationStep + 1) % creationSteps.length;
+            const step = creationSteps[creationStep];
+            creationScreenContent.innerHTML = step.screen;
+            creationScreenActions.innerHTML = step.actions;
+            creationExplanation.innerHTML = step.explanation;
+        }
+
+        function resetCreationSimulation() {
+            creationStep = -1;
+            nextCreationStep();
+        }
+        
+        const paymentScreenContent = document.getElementById('payment-screen-content');
+        const paymentScreenActions = document.getElementById('payment-screen-actions');
+        const paymentExplanation = document.getElementById('payment-explanation');
+        let paymentStep = 0;
+
+        const paymentSteps = [
+            {
+                title: 'Início do Pagamento',
+                screen: `
+                    <span class="text-5xl mb-4">💳</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Pagar com Passkey</h3>
+                    <p class="text-gray-600">Clique em "Pagar com Passkey" no celular para iniciar a simulação de uma transação com SPC.</p>
+                `,
+                actions: `
+                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Pagar com Passkey</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 1: Frontend Inicia o Pagamento</h3>
+                    <p class="text-gray-600 mt-2">O frontend prepara a requisição de pagamento e solicita ao backend as opções para o SPC, incluindo o token de segurança (challenge) e os detalhes da transação.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Exemplo de chamada do frontend para o backend</span>
+<span class="code-keyword">const</span> <span class="code-variable">response</span> = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(<span class="code-string">'/initiate-spc-payment'</span>);
+<span class="code-keyword">const</span> <span class="code-variable">options</span> = <span class="code-keyword">await</span> <span class="code-variable">response</span>.<span class="code-function">json</span>();
+<span class="code-comment">// 'options' contém os detalhes do pagamento e o challenge</span>
+                    </code></pre>
+                `
+            },
+            {
+                title: 'Detalhes do Pedido',
+                screen: `
+                    <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+                        <span class="text-5xl mb-4">🛍️</span>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Sua Compra</h3>
+                        <div class="bg-gray-100 p-4 rounded-lg w-full">
+                            <p class="font-bold text-lg text-gray-900">R$ 59,99</p>
+                            <p class="text-sm text-gray-500">Valor Total</p>
+                        </div>
+                    </div>
+                `,
+                actions: `
+                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Pagar R$ 59,99</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 2: Backend Prepara Dados SPC</h3>
+                    <p class="text-gray-600 mt-2">O backend constrói o objeto <code>SecurePaymentConfirmationRequest</code>, que contém os detalhes da transação (como valor e beneficiário) e o <code>challenge</code>. Estes dados são enviados para o frontend.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Exemplo de lógica de backend para gerar as opções de pagamento</span>
+<span class="code-keyword">const</span> <span class="code-variable">paymentOptions</span> = {
+  <span class="code-variable">rp</span>: { <span class="code-variable">id</span>: <span class="code-string">'lojaonline.com'</span>, <span class="code-variable">name</span>: <span class="code-string">'Minha Loja Online'</span> },
+  <span class="code-variable">challenge</span>: <span class="code-variable">crypto</span>.<span class="code-function">randomUUID</span>(),
+  <span class="code-variable">instrument</span>: {
+    <span class="code-variable">displayName</span>: <span class="code-string">'Visa **** 1234'</span>,
+    <span class="code-variable">icon</span>: <span class="code-string">'https://lojaonline.com/visa.svg'</span>
+  },
+  <span class="code-variable">payeeName</span>: <span class="code-string">'Minha Loja Online'</span>
+};
+<span class="code-comment">// O backend deve salvar paymentOptions.challenge na sessão</span>
+                    </code></pre>
+                `
+            },
+            {
+                title: 'Confirmação de Pagamento',
+                screen: `
+                    <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+                        <div class="p-6 bg-white rounded-2xl shadow-xl w-64 text-center">
+                            <span class="text-4xl">🔒</span>
+                            <p class="mt-4 font-semibold text-lg text-gray-800">Pagar R$ 59,99 para a Loja Online?</p>
+                            <div class="mt-4 flex flex-col space-y-2 text-sm text-gray-600">
+                                <p>Use sua passkey para confirmar a compra de forma segura.</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                actions: `
+                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="nextPaymentStep()">Confirmado</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 3: Chamada ` + `<span class="code-function">PaymentRequest.show()</span>` + ` com SPC</h3>
+                    <p class="text-gray-600 mt-2">O frontend usa a <code>PaymentRequest API</code> com o método <code>"secure-payment-confirmation"</code>. A API exibe a interface nativa do navegador para o usuário, que assina a transação com sua passkey. Isso cria um vínculo dinâmico, provando que o usuário consentiu com a transação e não apenas fez login.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Frontend recebe 'paymentOptions' do backend e chama a API</span>
+<span class="code-keyword">const</span> <span class="code-variable">paymentMethods</span> = [{
+  <span class="code-variable">supportedMethods</span>: <span class="code-string">'secure-payment-confirmation'</span>,
+  <span class="code-variable">data</span>: <span class="code-variable">paymentOptions</span>
+}];
+<span class="code-keyword">const</span> <span class="code-variable">request</span> = <span class="code-keyword">new</span> <span class="code-function">PaymentRequest</span>(<span class="code-variable">paymentMethods</span>, <span class="code-variable">details</span>);
+<span class="code-keyword">const</span> <span class="code-variable">response</span> = <span class="code-keyword">await</span> <span class="code-variable">request</span>.<span class="code-function">show</span>();
+                    </code></pre>
+                `
+            },
+            {
+                title: 'Pagamento Concluído',
+                screen: `
+                    <span class="text-5xl mb-4">✅</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Pagamento Autorizado!</h3>
+                    <p class="text-gray-600">Sua transação foi confirmada com sucesso de forma segura usando passkey.</p>
+                `,
+                actions: `
+                    <button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-400 transition-colors" onclick="resetPaymentSimulation()">Reiniciar Simulação</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 4: Backend Verifica a Assinatura</h3>
+                    <p class="text-gray-600 mt-2">O backend recebe a resposta do pagamento, que contém uma asserção WebAuthn. A verificação é similar a um login, mas o backend também verifica se os dados da transação no <code>clientDataJSON</code> correspondem aos dados que ele mesmo gerou. Se tudo estiver correto, o pagamento é processado.</p>
+                    <pre><code class="language-js"><span class="code-comment">// Exemplo de verificação no backend</span>
+<span class="code-keyword">const</span> <span class="code-variable">verification</span> = <span class="code-keyword">await</span> <span class="code-function">verifyPaymentResponse</span>({
+  <span class="code-variable">response</span>: <span class="code-variable">paymentResponse</span>,
+  <span class="code-variable">expectedChallenge</span>: <span class="code-variable">userSession</span>.<span class="code-variable">currentChallenge</span>,
+  <span class="code-variable">expectedOrigin</span>: <span class="code-string">'https://lojaonline.com'</span>,
+  <span class="code-variable">paymentData</span>: <span class="code-variable">expectedPaymentData</span>
+});
+                    </code></pre>
+                `
+            }
+        ];
+
+        function nextPaymentStep() {
+            paymentStep = (paymentStep + 1) % paymentSteps.length;
+            const step = paymentSteps[paymentStep];
+            paymentScreenContent.innerHTML = step.screen;
+            paymentScreenActions.innerHTML = step.actions;
+            paymentExplanation.innerHTML = step.explanation;
+        }
+        
+        function resetPaymentSimulation() {
+            paymentStep = -1;
+            nextPaymentStep();
         }
     </script>
 </body>
