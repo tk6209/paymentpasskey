@@ -8,10 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutral Harmony -->
-    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area. The structure is now directly task-oriented, focusing on two main interactive flows: Passkey Creation and Payment Confirmation. The interactive phone mockup and its state-driven logic are integrated directly into the "Criação de Passkey" and "Pagamento com SPC" sections. This design was chosen to create a more cohesive and contextual learning experience, linking explanatory text directly with a hands-on simulation in one view. -->
-    <!-- Visualization & Content Choices: The report describes processes, not quantitative data, so traditional charts are unsuitable. The core interactive element is the phone mockup, built with HTML/Tailwind. Goal: Explain Process -> Method: Interactive, state-driven phone mockup with dynamic screen content, placed directly within the relevant sections -> Interaction: Clicking buttons on the phone advances the simulation to the next step, revealing both UI changes and code snippets. Justification: This provides a highly integrated, cause-and-effect learning experience. Interactive HTML tables are used for technical parameters in a separate section. All elements are built with HTML/CSS/JS, confirming no SVG/Mermaid. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -63,6 +59,13 @@
             font-size: 0.875rem;
             margin-top: 1rem;
         }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -75,10 +78,14 @@
                     <span class="mr-3">👋</span> Introdução
                 </a>
                 <a href="#creation" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
-                    <span class="mr-3">🔑</span> Criação de Passkey
+                    <span class="mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round"><path d="M2 18v2a2 2 0 0 0 2 2h4"/><path d="M15 22h2a2 2 0 0 0 2-2v-2"/><path d="M2 13v-2a2 2 0 0 1 2-2h10l3-3 3 3v2l-3 3h-2"/><path d="M7 11h2"/></svg>
+                    </span> Criação de Passkey
                 </a>
                 <a href="#payment" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
-                    <span class="mr-3">💳</span> Pagamento com SPC
+                    <span class="mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                    </span> Pagamento com SPC
                 </a>
                 <a href="#details" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
                     <span class="mr-3">⚙️</span> Detalhes Técnicos
@@ -127,9 +134,12 @@
                                     <div class="w-12 h-4 bg-gray-800 rounded-b-xl -mt-1 mx-2"></div>
                                     <span class="text-xs">📶 🔋</span>
                                 </div>
-                                <div id="creation-phone-screen" class="phone-screen p-4 flex flex-col justify-between">
-                                    <div id="creation-screen-content" class="text-center flex-1 flex flex-col items-center justify-center">
-                                        <span class="text-5xl mb-4">🔑</span>
+                                <div id="creation-phone-screen" class="phone-screen p-4 flex flex-col justify-between relative">
+                                     <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                        <div id="creation-progress-bar" class="bg-[#A78BFA] h-2 rounded-full transition-all duration-500 ease-in-out" style="width: 0%"></div>
+                                    </div>
+                                    <div id="creation-screen-content" class="text-center flex-1 flex flex-col items-center justify-center animate-fade-in">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round mb-4"><path d="M2 18v2a2 2 0 0 0 2 2h4"/><path d="M15 22h2a2 2 0 0 0 2-2v-2"/><path d="M2 13v-2a2 2 0 0 1 2-2h10l3-3 3 3v2l-3 3h-2"/><path d="M7 11h2"/></svg>
                                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Criação de Passkey</h3>
                                         <p class="text-gray-600">Bem-vindo! Clique no botão abaixo para iniciar o processo de criação da sua passkey.</p>
                                     </div>
@@ -158,11 +168,14 @@
                                     <div class="w-12 h-4 bg-gray-800 rounded-b-xl -mt-1 mx-2"></div>
                                     <span class="text-xs">📶 🔋</span>
                                 </div>
-                                <div id="payment-phone-screen" class="phone-screen p-4 flex flex-col justify-between">
-                                    <div id="payment-screen-content" class="text-center flex-1 flex flex-col items-center justify-center">
-                                        <span class="text-5xl mb-4">💳</span>
+                                <div id="payment-phone-screen" class="phone-screen p-4 flex flex-col justify-between relative">
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                        <div id="payment-progress-bar" class="bg-[#34D399] h-2 rounded-full transition-all duration-500 ease-in-out" style="width: 0%"></div>
+                                    </div>
+                                    <div id="payment-screen-content" class="text-center flex-1 flex flex-col items-center justify-center animate-fade-in">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card mb-4"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Pagar com Passkey</h3>
-                                        <p class="text-gray-600">Clique em "Pagar com Passkey" no celular para iniciar a simulação de uma transação.</p>
+                                        <p class="text-gray-600">Clique em "Pagar com Passkey" no celular para iniciar a simulação de uma transação com SPC.</p>
                                     </div>
                                     <div id="payment-screen-actions" class="flex flex-col space-y-4">
                                         <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Pagar com Passkey</button>
@@ -343,13 +356,19 @@
         const creationScreenContent = document.getElementById('creation-screen-content');
         const creationScreenActions = document.getElementById('creation-screen-actions');
         const creationExplanation = document.getElementById('creation-explanation');
+        const creationProgressBar = document.getElementById('creation-progress-bar');
         let creationStep = 0;
+
+        function updateCreationProgressBar(currentStep, totalSteps) {
+            const percentage = ((currentStep + 1) / totalSteps) * 100;
+            creationProgressBar.style.width = `${percentage}%`;
+        }
 
         const creationSteps = [
             {
                 title: 'Início do Processo',
                 screen: `
-                    <span class="text-5xl mb-4">🔑</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-round mb-4"><path d="M2 18v2a2 2 0 0 0 2 2h4"/><path d="M15 22h2a2 2 0 0 0 2-2v-2"/><path d="M2 13v-2a2 2 0 0 1 2-2h10l3-3 3 3v2l-3 3h-2"/><path d="M7 11h2"/></svg>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Criação de Passkey</h3>
                     <p class="text-gray-600">Bem-vindo! Clique no botão abaixo para iniciar o processo de criação da sua passkey.</p>
                 `,
@@ -369,7 +388,7 @@
             {
                 title: 'Backend Gera Opções',
                 screen: `
-                    <span class="text-5xl mb-4">🖥️</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-server mb-4"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Conectando ao Servidor...</h3>
                     <p class="text-gray-600">O servidor está gerando um token de segurança único (challenge) e outras opções para a sua passkey.</p>
                 `,
@@ -394,7 +413,7 @@
             {
                 title: 'Confirmação do Usuário',
                 screen: `
-                    <span class="text-5xl mb-4">📱</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fingerprint mb-4"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 12C5 8.1 8.1 5 12 5c2.6 0 4.8.8 6.7 2.2"/><path d="M12 12v10"/><path d="M12 12c-1.4 0-2.7.4-4.4 1.3"/><path d="M14 10a2 2 0 0 1 2 2c0 2-1 3-1 3"/><path d="M16 12h2"/><path d="M22 12a10 10 0 0 1-2 6"/><path d="M15 22v-4a2 2 0 0 0-2-2"/><path d="M12 17c-1 0-2.4-.6-4-1.3"/><path d="M20 15v-3"/></svg>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Confirme sua Passkey</h3>
                     <p class="text-gray-600">O navegador está solicitando sua confirmação. Use sua biometria, PIN ou senha para autorizar.</p>
                 `,
@@ -419,7 +438,7 @@
             {
                 title: 'Sucesso',
                 screen: `
-                    <span class="text-5xl mb-4">🎉</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mb-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.62"/><path d="m9 11 3 3L22 4"/></svg>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Passkey Criada!</h3>
                     <p class="text-gray-600">Sua nova passkey foi criada e está pronta para ser usada de forma segura.</p>
                 `,
@@ -444,9 +463,13 @@
         function nextCreationStep() {
             creationStep = (creationStep + 1) % creationSteps.length;
             const step = creationSteps[creationStep];
+            creationScreenContent.classList.remove('animate-fade-in');
+            void creationScreenContent.offsetWidth; // Trigger reflow
             creationScreenContent.innerHTML = step.screen;
             creationScreenActions.innerHTML = step.actions;
             creationExplanation.innerHTML = step.explanation;
+            creationScreenContent.classList.add('animate-fade-in');
+            updateCreationProgressBar(creationStep, creationSteps.length);
         }
 
         function resetCreationSimulation() {
@@ -457,22 +480,29 @@
         const paymentScreenContent = document.getElementById('payment-screen-content');
         const paymentScreenActions = document.getElementById('payment-screen-actions');
         const paymentExplanation = document.getElementById('payment-explanation');
+        const paymentProgressBar = document.getElementById('payment-progress-bar');
         let paymentStep = 0;
+
+        function updatePaymentProgressBar(currentStep, totalSteps) {
+            const bar = document.getElementById('payment-progress-bar');
+            const percentage = ((currentStep + 1) / totalSteps) * 100;
+            bar.style.width = `${percentage}%`;
+        }
 
         const paymentSteps = [
             {
                 title: 'Início do Pagamento',
                 screen: `
-                    <span class="text-5xl mb-4">💳</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card mb-4"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Pagar com Passkey</h3>
-                    <p class="text-gray-600">Clique em "Pagar com Passkey" no celular para iniciar a simulação de uma transação com SPC.</p>
+                    <p class="text-gray-600">Clique em "Pagar com Passkey" para iniciar a simulação de uma transação com SPC.</p>
                 `,
                 actions: `
                     <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Pagar com Passkey</button>
                 `,
                 explanation: `
-                    <h3 class="font-semibold text-lg text-gray-800">Passo 1: Frontend Inicia o Pagamento</h3>
-                    <p class="text-gray-600 mt-2">O frontend prepara a requisição de pagamento e solicita ao backend as opções para o SPC, incluindo o token de segurança (challenge) e os detalhes da transação.</p>
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 1: Ação do Usuário</h3>
+                    <p class="text-gray-600 mt-2">O fluxo de pagamento começa com o usuário iniciando a transação. O frontend prepara a requisição de pagamento e solicita ao backend as opções para o SPC, incluindo o token de segurança (challenge) e os detalhes da transação.</p>
                     <pre><code class="language-js"><span class="code-comment">// Exemplo de chamada do frontend para o backend</span>
 <span class="code-keyword">const</span> <span class="code-variable">response</span> = <span class="code-keyword">await</span> <span class="code-function">fetch</span>(<span class="code-string">'/initiate-spc-payment'</span>);
 <span class="code-keyword">const</span> <span class="code-variable">options</span> = <span class="code-keyword">await</span> <span class="code-variable">response</span>.<span class="code-function">json</span>();
@@ -481,23 +511,40 @@
                 `
             },
             {
-                title: 'Detalhes do Pedido',
+                title: 'Carrinho de Compras',
                 screen: `
-                    <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
-                        <span class="text-5xl mb-4">🛍️</span>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Sua Compra</h3>
-                        <div class="bg-gray-100 p-4 rounded-lg w-full">
-                            <p class="font-bold text-lg text-gray-900">R$ 59,99</p>
-                            <p class="text-sm text-gray-500">Valor Total</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart mb-4"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.5 2h1.5l4.5 12.5c.3.8.9 1.5 1.7 1.7L19 19H8"/></svg>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Carrinho de Compras</h3>
+                    <div class="grid grid-cols-2 gap-4 mt-4 w-full text-left">
+                        <img src="https://placehold.co/100x100/A78BFA/ffffff?text=Produto" alt="Produto" class="rounded-lg">
+                        <div>
+                            <h4 class="font-semibold">Decov Shop</h4>
+                            <p class="text-sm text-gray-600">Tapete decorativo premium</p>
+                            <p class="font-bold text-lg mt-1">R$ 59,99</p>
                         </div>
                     </div>
                 `,
                 actions: `
-                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Pagar R$ 59,99</button>
+                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Finalizar Compra</button>
                 `,
                 explanation: `
-                    <h3 class="font-semibold text-lg text-gray-800">Passo 2: Backend Prepara Dados SPC</h3>
-                    <p class="text-gray-600 mt-2">O backend constrói o objeto <code>SecurePaymentConfirmationRequest</code>, que contém os detalhes da transação (como valor e beneficiário) e o <code>challenge</code>. Estes dados são enviados para o frontend.</p>
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 2: Exibição do Carrinho</h3>
+                    <p class="text-gray-600 mt-2">O usuário revisa o carrinho de compras. Esta tela simula a interface do seu site. Ao clicar em "Finalizar Compra", o navegador iniciará o processo de Secure Payment Confirmation (SPC) para autenticar o pagamento de forma segura.</p>
+                `
+            },
+            {
+                title: 'Detalhes do Pedido',
+                screen: `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-server mb-4"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Conectando ao Servidor...</h3>
+                    <p class="text-gray-600">O servidor está preparando os detalhes da transação para o SPC.</p>
+                `,
+                actions: `
+                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Simular ` + `<span class="code-function">PaymentRequest.show()</span>` + `</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 3: Backend Prepara Dados SPC</h3>
+                    <p class="text-gray-600 mt-2">O backend constrói o objeto <code>SecurePaymentConfirmationRequest</code>, que contém os detalhes da transação (como valor e beneficiário) e o <code>challenge</code>. Estes dados são enviados para o frontend. A imagem acima é apenas um mock visual.</p>
                     <pre><code class="language-js"><span class="code-comment">// Exemplo de lógica de backend para gerar as opções de pagamento</span>
 <span class="code-keyword">const</span> <span class="code-variable">paymentOptions</span> = {
   <span class="code-variable">rp</span>: { <span class="code-variable">id</span>: <span class="code-string">'lojaonline.com'</span>, <span class="code-variable">name</span>: <span class="code-string">'Minha Loja Online'</span> },
@@ -517,7 +564,7 @@
                 screen: `
                     <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
                         <div class="p-6 bg-white rounded-2xl shadow-xl w-64 text-center">
-                            <span class="text-4xl">🔒</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet mb-4"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-3m-6 0v4a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2"/><path d="M22 7V4a1 1 0 0 0-1-1H3a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h18a1 1 0 0 0 1-1z"/><path d="M3 11v-1a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1"/><line x1="12" x2="12" y1="12" y2="12"/></svg>
                             <p class="mt-4 font-semibold text-lg text-gray-800">Pagar R$ 59,99 para a Loja Online?</p>
                             <div class="mt-4 flex flex-col space-y-2 text-sm text-gray-600">
                                 <p>Use sua passkey para confirmar a compra de forma segura.</p>
@@ -526,10 +573,10 @@
                     </div>
                 `,
                 actions: `
-                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="nextPaymentStep()">Confirmado</button>
+                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="nextPaymentStep()">Confirmar</button>
                 `,
                 explanation: `
-                    <h3 class="font-semibold text-lg text-gray-800">Passo 3: Chamada ` + `<span class="code-function">PaymentRequest.show()</span>` + ` com SPC</h3>
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 4: Chamada ` + `<span class="code-function">PaymentRequest.show()</span>` + ` com SPC</h3>
                     <p class="text-gray-600 mt-2">O frontend usa a <code>PaymentRequest API</code> com o método <code>"secure-payment-confirmation"</code>. A API exibe a interface nativa do navegador para o usuário, que assina a transação com sua passkey. Isso cria um vínculo dinâmico, provando que o usuário consentiu com a transação e não apenas fez login.</p>
                     <pre><code class="language-js"><span class="code-comment">// Frontend recebe 'paymentOptions' do backend e chama a API</span>
 <span class="code-keyword">const</span> <span class="code-variable">paymentMethods</span> = [{
@@ -542,9 +589,26 @@
                 `
             },
             {
+                title: 'Autenticação Biométrica',
+                screen: `
+                    <div class="flex flex-col items-center justify-center flex-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-fingerprint mb-6"><path d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"/><path d="M5 12C5 8.1 8.1 5 12 5c2.6 0 4.8.8 6.7 2.2"/><path d="M12 12v10"/><path d="M12 12c-1.4 0-2.7.4-4.4 1.3"/><path d="M14 10a2 2 0 0 1 2 2c0 2-1 3-1 3"/><path d="M16 12h2"/><path d="M22 12a10 10 0 0 1-2 6"/><path d="M15 22v-4a2 2 0 0 0-2-2"/><path d="M12 17c-1 0-2.4-.6-4-1.3"/><path d="M20 15v-3"/></svg>
+                        <h3 class="text-xl font-semibold text-gray-800">Confirme com biometria</h3>
+                        <p class="text-gray-600 mt-2">Use sua digital ou Face ID para autorizar.</p>
+                    </div>
+                `,
+                actions: `
+                    <button class="bg-[#34D399] text-white py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="nextPaymentStep()">Usar Biometria</button>
+                `,
+                explanation: `
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 5: Autenticação Biométrica do Usuário</h3>
+                    <p class="text-gray-600 mt-2">Nesta etapa, o navegador exibe a interface de autenticação nativa, como Face ID, Touch ID ou a digital do Android. A passkey é usada para criar uma assinatura digital da transação, que será enviada de volta ao servidor.</p>
+                `
+            },
+            {
                 title: 'Pagamento Concluído',
                 screen: `
-                    <span class="text-5xl mb-4">✅</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mb-4"><path d="M22 11.08V12a10 10 0 1 1-5.93-8.62"/><path d="m9 11 3 3L22 4"/></svg>
                     <h3 class="text-xl font-semibold text-gray-800 mb-2">Pagamento Autorizado!</h3>
                     <p class="text-gray-600">Sua transação foi confirmada com sucesso de forma segura usando passkey.</p>
                 `,
@@ -552,8 +616,8 @@
                     <button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-400 transition-colors" onclick="resetPaymentSimulation()">Reiniciar Simulação</button>
                 `,
                 explanation: `
-                    <h3 class="font-semibold text-lg text-gray-800">Passo 4: Backend Verifica a Assinatura</h3>
-                    <p class="text-gray-600 mt-2">O backend recebe a resposta do pagamento, que contém uma asserção WebAuthn. A verificação é similar a um login, mas o backend também verifica se os dados da transação no <code>clientDataJSON</code> correspondem aos dados que ele mesmo gerou. Se tudo estiver correto, o pagamento é processado.</p>
+                    <h3 class="font-semibold text-lg text-gray-800">Passo 6: Backend Verifica a Assinatura</h3>
+                    <p class="text-gray-600 mt-2">O backend recebe a resposta do pagamento, que contém uma asserção WebAuthn. A verificação é similar a um login, mas o backend também verifica se os dados da transação no <code>clientDataJSON</code> correspondem aos dados que ele mesmo gerou. Se tudo estiver correto, o pagamento é processado e o fluxo é concluído.</p>
                     <pre><code class="language-js"><span class="code-comment">// Exemplo de verificação no backend</span>
 <span class="code-keyword">const</span> <span class="code-variable">verification</span> = <span class="code-keyword">await</span> <span class="code-function">verifyPaymentResponse</span>({
   <span class="code-variable">response</span>: <span class="code-variable">paymentResponse</span>,
@@ -569,9 +633,16 @@
         function nextPaymentStep() {
             paymentStep = (paymentStep + 1) % paymentSteps.length;
             const step = paymentSteps[paymentStep];
+            
+            // Apply fade transition
+            paymentScreenContent.classList.remove('animate-fade-in');
+            void paymentScreenContent.offsetWidth; // Trigger reflow
             paymentScreenContent.innerHTML = step.screen;
             paymentScreenActions.innerHTML = step.actions;
             paymentExplanation.innerHTML = step.explanation;
+            paymentScreenContent.classList.add('animate-fade-in');
+            
+            updatePaymentProgressBar(paymentStep, paymentSteps.length);
         }
         
         function resetPaymentSimulation() {
