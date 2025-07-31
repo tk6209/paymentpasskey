@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Interativa: Passkeys para Pagamentos com SPC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: A single-page application with a fixed sidebar for navigation and a main content area. A mobile phone mockup is the core interactive component. The structure is task-oriented, focusing on two main interactive flows: Passkey Creation and Payment Confirmation. This design was chosen to provide a direct, hands-on experience, allowing users to "step through" the process on a simulated device. The phone mockup acts as a visual state machine, dynamically updating its content based on user clicks to simulate both UI changes and underlying code execution, which is a highly effective method for teaching complex processes. -->
+    <!-- Visualization & Content Choices: The report describes processes, not quantitative data, so traditional charts are unsuitable. The primary "visualization" is an interactive phone mockup built with HTML/Tailwind. Goal: Explain Process -> Method: Interactive, state-driven phone mockup with dynamic screen content -> Interaction: Clicking buttons on the phone advances the simulation to the next step, revealing UI and code. Justification: This actively engages the user and provides a more intuitive, cause-and-effect learning experience than static diagrams and modals. Interactive HTML tables are used to present technical parameters. All elements are built with HTML/CSS/JS, confirming no SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4B5563;
+        }
+        .sidebar-active {
+            background-color: #EAE6E1;
+            color: #1F2937;
+            font-weight: 600;
+        }
+        .phone-mockup {
+            width: 320px;
+            height: 640px;
+            background: #1F2937;
+            border-radius: 36px;
+            padding: 10px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .phone-screen {
+            flex: 1;
+            background: white;
+            border-radius: 26px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .phone-header {
+            background: #E5E7EB;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .code-keyword { color: #A78BFA; }
+        .code-function { color: #60A5FA; }
+        .code-string { color: #FBBF24; }
+        .code-comment { color: #9CA3AF; }
+        .code-variable { color: #34D399; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="flex min-h-screen">
+        <aside class="w-64 bg-[#F5F1EC] p-6 hidden lg:block sticky top-0 h-screen">
+            <h1 class="text-xl font-bold text-gray-800 mb-8">Passkeys & Pagamentos</h1>
+            <nav id="sidebar-nav">
+                <a href="#intro" class="nav-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
+                    <span class="mr-3">👋</span> Introdução
+                </a>
+                <a href="#creation" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
+                    <span class="mr-3">🔑</span> Criação de Passkey
+                </a>
+                <a href="#payment" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
+                    <span class="mr-3">💳</span> Pagamento com SPC
+                </a>
+                <a href="#simulation" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
+                    <span class="mr-3">📱</span> Simulação Interativa
+                </a>
+                <a href="#details" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
+                    <span class="mr-3">⚙️</span> Detalhes Técnicos
+                </a>
+                <a href="#security" class="nav-link flex items-center px-4 py-3 mt-2 rounded-lg text-gray-700 hover:bg-[#EAE6E1]">
+                    <span class="mr-3">🛡️</span> Segurança
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-4 sm:p-6 md:p-10">
+            <div class="max-w-4xl mx-auto">
+                <div class="lg:hidden mb-6">
+                    <select id="mobile-nav" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                        <option value="intro">Introdução</option>
+                        <option value="creation">Criação de Passkey</option>
+                        <option value="payment">Pagamento com SPC</option>
+                        <option value="simulation">Simulação Interativa</option>
+                        <option value="details">Detalhes Técnicos</option>
+                        <option value="security">Segurança</option>
+                    </select>
+                </div>
+
+                <section id="intro" class="content-section">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Demonstração Interativa de Passkeys para Pagamentos</h2>
+                    <p class="text-lg text-gray-600 mb-6">Esta aplicação traduz o relatório técnico sobre passkeys e Secure Payment Confirmation (SPC) em uma experiência interativa. O objetivo é desmistificar os fluxos de criação e uso de passkeys em contextos de pagamento, fornecendo uma visão clara da interação entre frontend, backend e navegador. Navegue pelas seções para explorar cada etapa do processo.</p>
+                    <div class="grid md:grid-cols-2 gap-6 mt-8">
+                        <div class="bg-white p-6 rounded-xl border border-gray-200">
+                            <h3 class="font-semibold text-lg text-gray-800 mb-2">O que são Passkeys?</h3>
+                            <p class="text-gray-600">Uma alternativa segura e resistente a phishing às senhas. Baseadas no padrão WebAuthn, usam criptografia de chave pública e permitem autenticação com biometria ou PIN do dispositivo, eliminando a necessidade de senhas tradicionais.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl border border-gray-200">
+                            <h3 class="font-semibold text-lg text-gray-800 mb-2">O que é SPC?</h3>
+                            <p class="text-gray-600">Secure Payment Confirmation é uma API web que estende o WebAuthn. Ela foi projetada para autenticar transações, fornecendo prova criptográfica de que o usuário consentiu com os detalhes específicos de um pagamento (valor, beneficiário), e não apenas que fez login.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="creation" class="content-section hidden">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Criação de Passkey</h2>
+                    <p class="text-lg text-gray-600 mb-8">Esta seção descreve a jornada do usuário para criar uma passkey em seu dispositivo. O processo garante que a conta do usuário seja associada de forma segura a uma nova credencial criptográfica, substituindo a necessidade de senhas. Para uma demonstração prática, acesse a seção de Simulação Interativa.</p>
+                </section>
+
+                <section id="payment" class="content-section hidden">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Pagamento com SPC</h2>
+                    <p class="text-lg text-gray-600 mb-8">Aqui, exploramos como o Secure Payment Confirmation (SPC) utiliza passkeys para autorizar transações. O foco é na segurança e na experiência do usuário, garantindo que o consentimento do pagamento seja explícito e à prova de adulteração. Para uma demonstração prática, acesse a seção de Simulação Interativa.</p>
+                </section>
+
+                <section id="simulation" class="content-section hidden">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Simulação Interativa</h2>
+                    <p class="text-lg text-gray-600 mb-8">Utilize o mockup de celular abaixo para simular os fluxos de passkeys e SPC. Clique nos botões para avançar nas etapas e ver como a UI do navegador e as chamadas de código interagem para garantir uma experiência de autenticação e pagamento segura.</p>
+                    <div class="flex justify-center">
+                        <div class="phone-mockup">
+                            <div class="phone-header rounded-t-xl text-gray-600">
+                                <span class="text-xs">9:41</span>
+                                <div class="w-12 h-4 bg-gray-800 rounded-b-xl -mt-1 mx-2"></div>
+                                <span class="text-xs">📶 🔋</span>
+                            </div>
+                            <div id="phone-screen" class="phone-screen p-4 flex flex-col justify-between">
+                                <div id="screen-content" class="text-center flex-1 flex flex-col items-center justify-center">
+                                    <span class="text-5xl mb-4">🔑</span>
+                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Passkeys & SPC</h3>
+                                    <p class="text-gray-600 mb-6">Selecione uma ação para iniciar a simulação:</p>
+                                </div>
+                                <div id="screen-actions" class="flex flex-col space-y-4">
+                                    <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="startSimulation('creation')">Criar Passkey</button>
+                                    <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="startSimulation('payment')">Pagar com Passkey</button>
+                                </div>
+                            </div>
+                            <div class="h-4 bg-black rounded-b-3xl"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="details" class="content-section hidden">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Detalhes Técnicos</h2>
+                    <p class="text-lg text-gray-600 mb-8">As operações de WebAuthn e SPC dependem de estruturas de dados específicas. As tabelas abaixo detalham os parâmetros-chave. Passe o mouse sobre uma linha para uma breve descrição.</p>
+                    <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4">Parâmetros Chave do WebAuthn</h3>
+                    <div class="overflow-x-auto bg-white rounded-xl border border-gray-200">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Parâmetro</th>
+                                    <th class="p-4 font-semibold">Aplicabilidade</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50" title="Identificador da Parte Confiável (geralmente o domínio do seu site).">
+                                    <td class="p-4 font-mono">rp.id</td>
+                                    <td class="p-4">Criação, Autenticação</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Identificador único do usuário no seu sistema, fornecido como um ArrayBuffer.">
+                                    <td class="p-4 font-mono">user.id</td>
+                                    <td class="p-4">Criação</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Valor aleatório e único gerado pelo servidor para prevenir ataques de repetição.">
+                                    <td class="p-4 font-mono">challenge</td>
+                                    <td class="p-4">Criação, Autenticação</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Especifica os algoritmos de chave pública aceitos (ex: ES256).">
+                                    <td class="p-4 font-mono">pubKeyCredParams</td>
+                                    <td class="p-4">Criação</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Exige que o usuário se verifique (biometria/PIN), não apenas que esteja presente.">
+                                    <td class="p-4 font-mono">userVerification</td>
+                                    <td class="p-4">Criação, Autenticação</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Controla a UI do navegador, 'conditional' permite o preenchimento automático.">
+                                    <td class="p-4 font-mono">mediation</td>
+                                    <td class="p-4">Autenticação</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-800 mt-8 mb-4">Campos de Dados da Solicitação SPC</h3>
+                    <div class="overflow-x-auto bg-white rounded-xl border border-gray-200">
+                        <table class="w-full text-left">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="p-4 font-semibold">Campo</th>
+                                    <th class="p-4 font-semibold">Obrigatório</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50" title="Valor aleatório criptográfico fornecido pelo servidor.">
+                                    <td class="p-4 font-mono">challenge</td>
+                                    <td class="p-4">Obrigatório</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Lista de IDs de credenciais WebAuthn registradas para o pagamento.">
+                                    <td class="p-4 font-mono">credentialIds</td>
+                                    <td class="p-4">Obrigatório</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Nome do instrumento de pagamento (ex: 'Visa **** 1234').">
+                                    <td class="p-4 font-mono">instrument.displayName</td>
+                                    <td class="p-4">Obrigatório</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="URL do ícone do instrumento de pagamento (ex: logo da bandeira).">
+                                    <td class="p-4 font-mono">instrument.icon</td>
+                                    <td class="p-4">Obrigatório</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50" title="Nome de exibição do beneficiário (o comerciante).">
+                                    <td class="p-4 font-mono">payeeName</td>
+                                    <td class="p-4">Opcional</td>
+                                </tr>
+                                 <tr class="hover:bg-gray-50" title="Origem (domínio) do beneficiário.">
+                                    <td class="p-4 font-mono">payeeOrigin</td>
+                                    <td class="p-4">Opcional</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section id="security" class="content-section hidden">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Considerações de Segurança</h2>
+                    <p class="text-lg text-gray-600 mb-8">A implementação de passkeys e SPC requer atenção a detalhes de segurança críticos para proteger os usuários e as transações. O princípio mais importante é a mitigação de ataques de repetição.</p>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
+                                <span class="text-2xl">🛡️</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="font-semibold text-lg text-gray-800">Mitigando Ataques de Repetição com `challenge`</h3>
+                                <p class="text-gray-600 mt-1">O `challenge` é a principal defesa contra ataques de repetição, onde um invasor intercepta uma resposta de autenticação e a reutiliza.</p>
+                                <ul class="list-disc list-inside mt-4 space-y-2 text-gray-600">
+                                    <li><strong>Único por Solicitação:</strong> O backend DEVE gerar um novo `challenge` criptograficamente seguro para cada tentativa de registro ou autenticação.</li>
+                                    <li><strong>Validade Curta:</strong> O `challenge` deve ser armazenado na sessão do usuário e ter uma vida útil curta (alguns minutos).</li>
+                                    <li><strong>Uso Único:</strong> Uma vez que um `challenge` é usado (seja em uma tentativa bem-sucedida ou falha), ele DEVE ser invalidado imediatamente no backend para que não possa ser usado novamente.</li>
+                                </ul>
+                                <p class="text-sm text-gray-500 mt-4">Usar uma biblioteca FIDO no lado do servidor (como SimpleWebAuthn) ajuda a gerenciar esses requisitos de segurança de forma robusta e confiável.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const mobileNav = document.getElementById('mobile-nav');
+
+        function setActiveSection(hash) {
+            const targetHash = hash.startsWith('#') ? hash : `#${hash}`;
+            
+            sections.forEach(section => {
+                if (`#${section.id}` === targetHash) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === targetHash) {
+                    link.classList.add('sidebar-active');
+                } else {
+                    link.classList.remove('sidebar-active');
+                }
+            });
+            
+            if (mobileNav.value !== hash.substring(1)) {
+                mobileNav.value = hash.substring(1);
+            }
+            
+            window.scrollTo(0, 0);
+        }
+
+        function handleNavigation(event) {
+            event.preventDefault();
+            const targetHash = event.currentTarget.getAttribute('href');
+            setActiveSection(targetHash);
+            history.pushState(null, null, targetHash);
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', handleNavigation);
+        });
+
+        mobileNav.addEventListener('change', (event) => {
+            const targetHash = `#${event.target.value}`;
+            setActiveSection(targetHash);
+            history.pushState(null, null, targetHash);
+        });
+
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash || '#intro';
+            setActiveSection(hash);
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash || '#intro';
+            setActiveSection(hash);
+        });
+
+        const phoneScreen = document.getElementById('phone-screen');
+        const screenContent = document.getElementById('screen-content');
+        const screenActions = document.getElementById('screen-actions');
+
+        const simulationData = {
+            'creation': [
+                {
+                    title: 'Criação de Passkey',
+                    description: 'O frontend se prepara para solicitar ao backend os parâmetros de registro.',
+                    actions: `<button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#8B5CF6] transition-colors" onclick="nextStep('creation', 1)">Frontend: Solicita Opções</button>`
+                },
+                {
+                    title: 'Backend Gera Opções',
+                    description: 'O backend cria um <strong>challenge</strong> único e os parâmetros de usuário, e os envia ao frontend.',
+                    actions: `<button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#8B5CF6] transition-colors" onclick="nextStep('creation', 2)">Simular ` + `<span class="code-function">navigator.credentials.create()</span></button>`
+                },
+                {
+                    title: 'Confirmação do Usuário',
+                    description: `O navegador exibe uma UI nativa. Simule a confirmação do usuário com biometria.`,
+                    actions: `<button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#10B981] transition-colors" onclick="nextStep('creation', 3)">Autenticado</button>`
+                },
+                {
+                    title: 'Backend Verifica',
+                    description: 'A credencial é enviada ao backend, que verifica a assinatura e salva a chave pública. Passkey criada com sucesso!',
+                    actions: `<button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors" onclick="resetSimulation()">Voltar ao Início</button>`
+                }
+            ],
+            'payment': [
+                {
+                    title: 'Confirmar Pagamento',
+                    description: 'O frontend está pronto para solicitar ao backend os detalhes de pagamento.',
+                    actions: `<button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#10B981] transition-colors" onclick="nextStep('payment', 1)">Frontend: Solicita Opções de Pagamento</button>`
+                },
+                {
+                    title: 'Backend Prepara Dados SPC',
+                    description: 'O backend prepara os detalhes da transação (valor, beneficiário) e o <strong>challenge</strong> para o SPC.',
+                    actions: `<button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#10B981] transition-colors" onclick="nextStep('payment', 2)">Simular ` + `<span class="code-function">PaymentRequest.show()</span></button>`
+                },
+                {
+                    title: 'Confirmação de Pagamento',
+                    description: `O navegador exibe a UI de confirmação de pagamento. Clique para simular a aprovação.`,
+                    actions: `<button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#8B5CF6] transition-colors" onclick="nextStep('payment', 3)">Pagar R$ 59,99</button>`
+                },
+                {
+                    title: 'Backend Verifica',
+                    description: 'A resposta do pagamento é verificada no backend, confirmando a transação. Pagamento concluído com sucesso!',
+                    actions: `<button class="bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors" onclick="resetSimulation()">Voltar ao Início</button>`
+                }
+            ]
+        };
+
+        let currentFlow = '';
+        let currentStep = 0;
+
+        function renderPhoneScreen(flow, step) {
+            const data = simulationData[flow][step];
+            screenContent.innerHTML = `
+                <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+                    <span class="text-5xl mb-4">${flow === 'creation' ? '🔑' : '💳'}</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">${data.title}</h3>
+                    <p class="text-gray-600">${data.description}</p>
+                </div>
+            `;
+            screenActions.innerHTML = data.actions;
+        }
+
+        function startSimulation(flow) {
+            currentFlow = flow;
+            currentStep = 0;
+            renderPhoneScreen(currentFlow, currentStep);
+        }
+
+        function nextStep(flow, step) {
+            if (flow !== currentFlow) return;
+            currentStep = step;
+            renderPhoneScreen(currentFlow, currentStep);
+        }
+
+        function resetSimulation() {
+            currentFlow = '';
+            currentStep = 0;
+            screenContent.innerHTML = `
+                <div class="flex-1 flex flex-col justify-center items-center text-center p-4">
+                    <span class="text-5xl mb-4">🔑</span>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Passkeys & SPC</h3>
+                    <p class="text-gray-600 mb-6">Selecione uma ação para iniciar a simulação:</p>
+                </div>
+            `;
+            screenActions.innerHTML = `
+                <button class="bg-[#A78BFA] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#8B5CF6] transition-colors" onclick="startSimulation('creation')">Criar Passkey</button>
+                <button class="bg-[#34D399] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-[#10B981] transition-colors" onclick="startSimulation('payment')">Pagar com Passkey</button>
+            `;
+        }
+    </script>
+</body>
+</html>
